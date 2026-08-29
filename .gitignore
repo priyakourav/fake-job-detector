@@ -1,0 +1,18 @@
+venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# raw/processed data is large and shouldn't go in git
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# trained models are large binaries
+models/*.pkl
+models/*.pt
+!models/.gitkeep
+
+.DS_Store
+.env
