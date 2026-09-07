@@ -52,17 +52,21 @@ cd ..
 
 ## Results
 
-| Model | Precision (fraud) | Recall (fraud) | F1 (fraud) | PR-AUC |
+| Model | Precision (fraud) | Recall (fraud) | F1 (fraud) | Best threshold |
 |---|---|---|---|---|
-| TF-IDF + LogReg | 0.833 | 0.699 | 0.760 | *(fill from LightGBM run)* |
-| TF-IDF + LightGBM | | | | |
+| TF-IDF + LogReg | 0.833 | 0.699 | 0.760 | 0.80 |
+| TF-IDF + LightGBM | 0.896 | 0.783 | 0.836 | 0.60 |
+
+**LightGBM outperforms Logistic Regression** across precision, recall, and F1 —
+likely because it captures non-linear interactions between structured features
+(missingness flags, keyword flags, has_company_logo) that a linear model can't.
+LightGBM is the model used going forward for error analysis.
 
 ## Notes on threshold choice
 
-Chose threshold = 0.80 for the Logistic Regression baseline after sweeping
-0.3–0.8. At this threshold: precision = 0.833, recall = 0.699, F1 = 0.760
-(highest F1 among tested values). Optimized for a balanced trade-off since
-both error types matter equally for this use case — flagging a genuine
-posting as fraud (false positive, costs the user a real opportunity) is
-just as bad as missing an actual scam (false negative, costs the user
-safety).
+For LightGBM, chose threshold = 0.60 (highest F1 = 0.836 among tested values:
+0.3–0.8). Optimized for a balanced trade-off since both error types matter
+equally for this use case — flagging a genuine posting as fraud (false
+positive, costs the user a real opportunity) is just as bad as missing an
+actual scam (false negative, costs the user safety).
+
