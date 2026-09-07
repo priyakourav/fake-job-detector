@@ -70,3 +70,27 @@ equally for this use case — flagging a genuine posting as fraud (false
 positive, costs the user a real opportunity) is just as bad as missing an
 actual scam (false negative, costs the user safety).
 
+
+## Error Analysis Findings
+
+Ran error analysis on the LightGBM model (threshold=0.60) on the held-out test set (3,184 postings):
+- **31 false negatives** (1.0%) — fraud postings the model missed
+- **13 false positives** (0.4%) — genuine postings incorrectly flagged
+
+**Pattern in false negatives:** Missed fraud postings tend to be well-written,
+professional-sounding listings with real company names and formal language
+(e.g. "Lead Business Analyst", "Software Design Engineer"). These sophisticated
+scams avoid the obvious keyword red flags (e.g. "urgent", "guaranteed") that
+the keyword features rely on — a real limitation of surface-level text signals.
+
+**Pattern in false positives:** Several false positives were **non-English
+postings** (German, Portuguese) — the TF-IDF vectorizer uses English stop-word
+removal, so non-English text produces unusual/rare token patterns that the
+model associates with fraud. This is a genuine limitation worth flagging:
+the current model is effectively English-only and would need language
+detection or multilingual embeddings to handle international postings fairly.
+
+**Takeaway for future iterations:** Add a language-detection preprocessing
+step, and consider whether sophisticated well-written scams need additional
+signals beyond text (e.g. company domain verification, posting recency,
+duplicate-posting detection across job boards).
