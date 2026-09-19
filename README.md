@@ -1,10 +1,24 @@
 # Fake Job Posting Detector
 
+🔗 **[Live Demo](https://job-fraud-detector-app.streamlit.app)** — paste any job posting and get an instant fraud risk score.
+
 Classifies job listings as real or fraudulent using NLP on posting text,
 combined with structured metadata (has_logo, telecommuting, employment_type, etc).
 
 Dataset: "Real or Fake Job Posting" (Kaggle) — ~18K postings, ~5% fraudulent.
 
+---
+
+## Demo Screenshots
+
+**App home screen:**
+![App home](screenshots/demo_home.png)
+
+**Low-risk (genuine) posting:**
+![Low risk result](screenshots/demo_low_risk.png)
+
+**High-risk (fraudulent) posting:**
+![High risk result](screenshots/demo_high_risk.png)
 ---
 
 ## Project roadmap
@@ -15,10 +29,10 @@ Dataset: "Real or Fake Job Posting" (Kaggle) — ~18K postings, ~5% fraudulent.
 - [x] **Step 3** — Data prep + feature engineering
 - [x] **Step 4** — Baseline model: TF-IDF + Logistic Regression / LightGBM
 - [x] **Step 5** — Evaluate properly (precision/recall/F1/PR-AUC on fraud class)
-- [ ] **Step 6** — Error analysis
+- [x] **Step 6** — Error analysis
 - [ ] **Step 7** — (stretch) Fine-tune DistilBERT
-- [ ] **Step 8** — Explainability (SHAP/LIME)
-- [ ] **Step 9** — Demo app (Streamlit)
+- [x] **Step 8** — Explainability (coefficient-based, via demo app)
+- [x] **Step 9** — Demo app (Streamlit) — deployed live
 - [ ] **Step 10** — Write-up
 
 ---
@@ -45,7 +59,15 @@ python src/data_prep.py
 cd src
 python train_baseline.py
 python evaluate.py --model ../models/baseline_logreg.pkl
+python error_analysis.py
 cd ..
+```
+
+## Run the demo app locally
+
+```bash
+cd app
+streamlit run demo.py
 ```
 
 ---
@@ -70,7 +92,6 @@ equally for this use case — flagging a genuine posting as fraud (false
 positive, costs the user a real opportunity) is just as bad as missing an
 actual scam (false negative, costs the user safety).
 
-
 ## Error Analysis Findings
 
 Ran error analysis on the LightGBM model (threshold=0.60) on the held-out test set (3,184 postings):
@@ -94,3 +115,11 @@ detection or multilingual embeddings to handle international postings fairly.
 step, and consider whether sophisticated well-written scams need additional
 signals beyond text (e.g. company domain verification, posting recency,
 duplicate-posting detection across job boards).
+
+## Tech Stack
+
+- **Language/Core:** Python
+- **ML:** scikit-learn (Logistic Regression, TF-IDF), LightGBM
+- **App/Deployment:** Streamlit, Streamlit Community Cloud
+- **Data handling:** pandas, NumPy
+- **Version control:** Git, GitHub
